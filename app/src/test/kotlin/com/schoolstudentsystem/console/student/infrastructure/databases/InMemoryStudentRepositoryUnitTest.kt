@@ -31,13 +31,12 @@ class InMemoryStudentRepositoryUnitTest {
     }
 
     @Test
-    fun `Given a student repository When search student by id Then it should return a specifict student`() {
+    fun `Given a student repository When search student by name Then it should return a specifict student`() {
         val student = Student(1, "John Doe", 85.5)
         repository.create(student)
 
-        val students = repository.get()
-        
-        assertEquals(1, students.size)
-        assertEquals(student, students[0])
+        val retrievedStudent = repository.searchInStudents("John")
+
+        assertEquals(student, retrievedStudent)
     }
 }
