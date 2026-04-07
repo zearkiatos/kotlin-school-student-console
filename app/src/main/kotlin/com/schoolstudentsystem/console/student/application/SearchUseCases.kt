@@ -1,21 +1,21 @@
 package com.schoolstudentsystem.console.student.application
 
+import com.schoolstudentsystem.console.student.application.dto.StudentResponse
+import com.schoolstudentsystem.console.student.application.mapper.toResponse
+import com.schoolstudentsystem.console.student.application.ports.input.SearchStudentInputPort
 import com.schoolstudentsystem.console.student.domain.StudentRepository
-import com.schoolstudentsystem.console.student.domain.model.Student
 
-class SearchUseCases(val studentRepository: StudentRepository) {
+class SearchUseCases(val studentRepository: StudentRepository) : SearchStudentInputPort {
 
-    fun searchByName(name: String): Student? {
-        val student = studentRepository.searchInStudents(name)
-
-        return student
+    override fun searchByName(name: String): StudentResponse? {
+        if (name.isBlank()) return null
+        return studentRepository.searchInStudents(name.trim())?.toResponse()
     }
 
-    fun searchById(id: Int): Student? {
+    override fun searchById(id: Int): StudentResponse? {
         try {
             val student = studentRepository.getStudentById(id)
-
-            return student
+            return student.toResponse()
         } catch (e: NoSuchElementException) {
             return null
         }
