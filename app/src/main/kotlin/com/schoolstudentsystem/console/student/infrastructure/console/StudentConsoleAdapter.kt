@@ -6,37 +6,53 @@ import com.schoolstudentsystem.console.student.application.ports.input.SearchStu
 import kotlin.io.readlnOrNull
 
 class StudentConsoleAdapter(
-    private val createPort: CreateStudentInputPort,
-    private val searchPort: SearchStudentInputPort
+        private val createPort: CreateStudentInputPort,
+        private val searchPort: SearchStudentInputPort
 ) {
 
     fun run() {
-        val exit = false
-        while (exit == false) {
-           
-            val line = readlnOrNull()?.trim().orEmpty()
-            if (line.equals("exit", ignoreCase = true)) break
-            if (line.isEmpty()) continue
+        while (true) {
+            println(
+                    """
+            What option do you want to select:
+            1) create a student
+            2) search student by id
+            3) search student by name
+            0) exit
+            """.trimIndent()
+            )
 
-            val parts = line.split(" ")
-            when (parts.firstOrNull()?.lowercase()) {
-                "create" -> handleCreate(parts)
-                "search-id" -> handleSearchById(parts)
-                "search-name" -> handleSearchByName(parts)
+            val line = readlnOrNull()?.trim()
+            if (line == "0") {
+                break
+            }
+
+            when (line) {
+                "1" -> handleCreate()
+                "2" -> handleSearchById()
+                "3" -> handleSearchByName()
                 else -> println("Unknown command")
             }
         }
     }
 
-    private fun handleCreate(parts: List<String>) {
-        if (parts.size < 4) {
-            println("Usage: create <id> <name> <grade>")
+    private fun handleCreate() {
+        println("Enter student details (id name grade):")
+        println("Type the user id:")
+        val idInput = readlnOrNull()?.trim()
+        println("Type the user name:")
+        val nameInput = readlnOrNull()?.trim()
+        println("Type the user grade:")
+        val gradeInput = readlnOrNull()?.trim()
+
+        if (idInput == null || nameInput == null || gradeInput == null) {
+            println("All fields are required")
             return
         }
 
-        val id = parts[1].toIntOrNull()
-        val grade = parts.last().toDoubleOrNull()
-        val name = parts.subList(2, parts.size - 1).joinToString(" ")
+        val id = idInput.toIntOrNull()
+        val grade = gradeInput.toDoubleOrNull()
+        val name = nameInput
 
         if (id == null || grade == null) {
             println("Invalid id or grade")
@@ -51,10 +67,12 @@ class StudentConsoleAdapter(
         }
     }
 
-    private fun handleSearchById(parts: List<String>) {
-        val id = parts.getOrNull(1)?.toIntOrNull()
+    private fun handleSearchById() {
+        println("“Please, Enter the ID of the student")
+
+        val id = readlnOrNull()?.trim()?.toIntOrNull()
         if (id == null) {
-            println("Usage: search-id <id>")
+            println("Invalid ID")
             return
         }
 
@@ -62,9 +80,10 @@ class StudentConsoleAdapter(
         println(student ?: "Student not found")
     }
 
-    private fun handleSearchByName(parts: List<String>) {
-        val name = parts.drop(1).joinToString(" ").trim()
-        if (name.isEmpty()) {
+    private fun handleSearchByName() {
+        println("Please, Enter the student's name")
+        val name = readlnOrNull()?.trim()
+        if (name.isNullOrEmpty()) {
             println("Usage: search-name <name>")
             return
         }
