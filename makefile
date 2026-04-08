@@ -1,5 +1,5 @@
 run:
-	./gradlew run
+	./gradlew run --console=plain
 
 package:
 	./gradlew distTar

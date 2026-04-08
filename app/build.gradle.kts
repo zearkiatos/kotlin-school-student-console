@@ -45,3 +45,7 @@ application {
     // Define the main class for the application.
     mainClass = "com.schoolstudentsystem.console.AppKt"
 }
+
+tasks.named<JavaExec>("run") {
+    standardInput = System.`in`
+}
